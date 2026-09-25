@@ -5,6 +5,16 @@ import { FOUNDER_VOICE } from "./voice";
 
 const SCORE_THRESHOLD = Number(process.env.SCORE_THRESHOLD || 6);
 
+// Telegram hard-caps messages at 4096 characters. Leave room for the
+// "Reply APPROVE or REJECT" suffix regardless of how long the model's draft
+// runs, so sendMessage can never fail on length.
+const MAX_DRAFT_CHARS = 3900;
+
+function capDraftLength(draftText: string): string {
+  if (draftText.length <= MAX_DRAFT_CHARS) return draftText;
+  return draftText.slice(0, MAX_DRAFT_CHARS - 1).trimEnd() + "…";
+}
+
 export async function runPipeline(input: {
   chatId: number;
   text: string;
@@ -25,7 +35,7 @@ export async function runPipeline(input: {
     }
 
     const newsAngle = await suggestNewsAngle(text).catch(() => null);
-    const draftText = await draftPost(text, FOUNDER_VOICE, newsAngle);
+    const draftText = capDraftLength(await draftPost(text, FOUNDER_VOICE, newsAngle));
 
     await sendTelegramMessage(
       chatId,

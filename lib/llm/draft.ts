@@ -8,7 +8,7 @@ function buildDraftPrompt(note: string, voice: string, newsAngle: string | null)
     newsAngle
       ? `Relevant angle to consider weaving in (optional, only if it fits naturally):\n${newsAngle}`
       : "",
-    "Write a single public post (LinkedIn-style) in the founder's voice above, based on the raw note. Output ONLY the post text, no preamble, no hashtags unless the voice guide calls for them.",
+    "Write a single public post (LinkedIn-style) in the founder's voice above, based on the raw note. Keep it under 2500 characters -- LinkedIn's own practical limit for a post that gets read, not an arbitrary cutoff. Output ONLY the post text, no preamble, no hashtags unless the voice guide calls for them.",
   ]
     .filter(Boolean)
     .join("\n\n");
