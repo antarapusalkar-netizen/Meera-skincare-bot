@@ -2,6 +2,20 @@ function apiBase() {
   return `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN?.replace(/\s/g, "")}`;
 }
 
+export async function getTelegramFile(fileId: string): Promise<Buffer> {
+  const infoRes = await fetch(`${apiBase()}/getFile?file_id=${fileId}`);
+  const info = await infoRes.json();
+  if (!info.ok) {
+    throw new Error(`Telegram getFile failed: ${JSON.stringify(info)}`);
+  }
+  const token = process.env.TELEGRAM_BOT_TOKEN?.replace(/\s/g, "");
+  const fileRes = await fetch(
+    `https://api.telegram.org/file/bot${token}/${info.result.file_path}`
+  );
+  const arrayBuffer = await fileRes.arrayBuffer();
+  return Buffer.from(arrayBuffer);
+}
+
 export async function sendTelegramMessage(
   chatId: number | string,
   text: string,

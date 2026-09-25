@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { waitUntil } from "@vercel/functions";
-import { runPipeline, handleDecision } from "@/lib/pipeline";
+import { runPipeline, handleDecision, handleVoiceNote } from "@/lib/pipeline";
 
 // Scoring + optional news angle + drafting can take 60-100s end to end.
 // Requires a Vercel plan whose function duration limit covers this
@@ -17,11 +17,27 @@ export async function POST(req: NextRequest) {
   // Channel posts arrive as update.channel_post, not update.message.
   const message = update?.channel_post || update?.message;
 
-  if (!message?.text) {
+  if (!message) {
     return NextResponse.json({ ok: true });
   }
 
   const chatId: number = message.chat.id;
+
+  if (!message.text && message.voice?.file_id) {
+    waitUntil(
+      handleVoiceNote({
+        chatId,
+        fileId: message.voice.file_id,
+        telegramMessageId: message.message_id,
+      })
+    );
+    return NextResponse.json({ ok: true });
+  }
+
+  if (!message.text) {
+    return NextResponse.json({ ok: true });
+  }
+
   const text: string = message.text;
 
   // Telegram channel posts here don't carry reply_to_message even when sent

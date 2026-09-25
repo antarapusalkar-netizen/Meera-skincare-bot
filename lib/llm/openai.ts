@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import OpenAI, { toFile } from "openai";
 
 let client: OpenAI | undefined;
 
@@ -49,4 +49,16 @@ export async function suggestNewsAngle(text: string): Promise<string | null> {
   });
   const out = completion.choices[0].message.content?.trim() || "NONE";
   return out === "NONE" ? null : out;
+}
+
+export async function transcribeAudio(buffer: Buffer): Promise<string> {
+  // Filename extension matters to the API regardless of the source's own
+  // extension (Telegram serves voice notes as .oga) -- .ogg is the accepted
+  // name for this container format.
+  const file = await toFile(buffer, "voice.ogg");
+  const transcription = await getOpenAI().audio.transcriptions.create({
+    file,
+    model: process.env.TRANSCRIBE_MODEL || "gpt-4o-mini-transcribe",
+  });
+  return transcription.text;
 }

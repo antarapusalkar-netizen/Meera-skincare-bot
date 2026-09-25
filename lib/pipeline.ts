@@ -1,5 +1,5 @@
-import { sendTelegramMessage } from "./telegram";
-import { scoreNote, suggestNewsAngle } from "./llm/openai";
+import { getTelegramFile, sendTelegramMessage } from "./telegram";
+import { scoreNote, suggestNewsAngle, transcribeAudio } from "./llm/openai";
 import { draftPost } from "./llm/draft";
 import { FOUNDER_VOICE } from "./voice";
 
@@ -37,6 +37,26 @@ export async function runPipeline(input: {
     await sendTelegramMessage(
       chatId,
       `Something went wrong processing that note: ${(err as Error).message}`,
+      telegramMessageId
+    ).catch(() => {});
+  }
+}
+
+export async function handleVoiceNote(input: {
+  chatId: number;
+  fileId: string;
+  telegramMessageId: number;
+}) {
+  const { chatId, fileId, telegramMessageId } = input;
+  try {
+    const buffer = await getTelegramFile(fileId);
+    const transcript = await transcribeAudio(buffer);
+    await runPipeline({ chatId, text: transcript, telegramMessageId });
+  } catch (err) {
+    console.error("Voice note error", err, "cause:", (err as any)?.cause);
+    await sendTelegramMessage(
+      chatId,
+      `Couldn't transcribe that voice note: ${(err as Error).message}`,
       telegramMessageId
     ).catch(() => {});
   }
