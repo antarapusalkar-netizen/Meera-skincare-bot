@@ -26,7 +26,9 @@ export async function draftPost(
     if (!process.env.ANTHROPIC_API_KEY) {
       throw new Error('DRAFT_MODEL is "claude" but ANTHROPIC_API_KEY is not set.');
     }
-    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY?.trim(),
+    });
     const message = await anthropic.messages.create({
       model: process.env.ANTHROPIC_DRAFT_MODEL || "claude-sonnet-5",
       max_tokens: 800,

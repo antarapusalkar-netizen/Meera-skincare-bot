@@ -1,5 +1,5 @@
 function apiBase() {
-  return `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+  return `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN?.trim()}`;
 }
 
 export async function sendTelegramMessage(
