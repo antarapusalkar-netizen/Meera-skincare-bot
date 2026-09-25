@@ -33,7 +33,7 @@ export async function runPipeline(input: {
       telegramMessageId
     );
   } catch (err) {
-    console.error("Pipeline error", err);
+    console.error("Pipeline error", err, "cause:", (err as any)?.cause);
     await sendTelegramMessage(
       chatId,
       `Something went wrong processing that note: ${(err as Error).message}`,
