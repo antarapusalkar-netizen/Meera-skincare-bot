@@ -1,0 +1,1 @@
+export const FOUNDER_VOICE = `Direct, specific, no corporate hedging. Short sentences. First person. Prefers a concrete detail or number over a generic claim. No hashtags, no emoji, no "excited to announce".`;

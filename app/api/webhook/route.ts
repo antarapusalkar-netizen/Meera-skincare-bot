@@ -23,11 +23,13 @@ export async function POST(req: NextRequest) {
 
   const chatId: number = message.chat.id;
   const text: string = message.text;
-  const replyToId: number | undefined = message.reply_to_message?.message_id;
 
-  if (replyToId && /^\s*(APPROVE|REJECT)\s*$/i.test(text)) {
+  // Telegram channel posts here don't carry reply_to_message even when sent
+  // via the Reply UI, so decisions are matched on literal text instead of
+  // reply-threading.
+  if (/^\s*(APPROVE|REJECT)\s*$/i.test(text)) {
     const decision = text.trim().toUpperCase() as "APPROVE" | "REJECT";
-    waitUntil(handleDecision(replyToId, decision, chatId));
+    waitUntil(handleDecision(decision, chatId, message.message_id));
     return NextResponse.json({ ok: true });
   }
 

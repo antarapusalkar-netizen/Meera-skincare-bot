@@ -1,3 +1,9 @@
+> **Note on this build:** the user opted out of Supabase — there is no
+> database. Step 3 and the Supabase-related items in Step 7 below were
+> skipped by request. Notes/drafts/decisions are not persisted anywhere;
+> Telegram's own chat history is the only record. The founder's voice guide
+> lives in `lib/voice.ts` instead of a `voice_skill` table.
+
 # Building Skinstinct Content Engine with Claude Code
 
 This file is written **for an AI coding agent** (Claude Code, or similar) that a person has

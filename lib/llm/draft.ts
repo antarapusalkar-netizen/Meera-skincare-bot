@@ -37,7 +37,7 @@ export async function draftPost(
   }
 
   const completion = await getOpenAI().chat.completions.create({
-    model: process.env.OPENAI_DRAFT_MODEL || "gpt-4o",
+    model: process.env.OPENAI_DRAFT_MODEL || "gpt-5.4",
     messages: [{ role: "user", content: prompt }],
   });
   return completion.choices[0].message.content?.trim() || "";

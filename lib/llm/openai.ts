@@ -13,7 +13,7 @@ export async function scoreNote(
   text: string
 ): Promise<{ score: number; reason: string }> {
   const completion = await getOpenAI().chat.completions.create({
-    model: process.env.SCORE_MODEL || "gpt-4o-mini",
+    model: process.env.SCORE_MODEL || "gpt-5.4-mini",
     response_format: { type: "json_object" },
     messages: [
       {
@@ -35,7 +35,7 @@ export async function scoreNote(
  */
 export async function suggestNewsAngle(text: string): Promise<string | null> {
   const completion = await getOpenAI().chat.completions.create({
-    model: process.env.SCORE_MODEL || "gpt-4o-mini",
+    model: process.env.SCORE_MODEL || "gpt-5.4-mini",
     messages: [
       {
         role: "system",
