@@ -4,7 +4,9 @@ let client: OpenAI | undefined;
 
 export function getOpenAI(): OpenAI {
   if (!client) {
-    client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY?.trim() });
+    client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY?.replace(/\s/g, ""),
+    });
   }
   return client;
 }
